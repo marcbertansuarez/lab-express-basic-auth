@@ -1,0 +1,12 @@
+<h2>Sign Up</h2>
+
+<form method="POST" action="/auth/signup">
+    <label>Username</label>
+    <input type="text" name="username" placeholder="Ironhacker1" required="true">
+    <label>Password</label>
+    <input type="password" name="password" placeholder="******" required="true">
+    <button type="submit">Register</button>
+    {{#if error}}
+    <p style="color: red">{{error}}</p>
+    {{/if}}
+</form>
