@@ -39,4 +39,39 @@ router.post('/signup', async (req, res, next) => {
     }
 })
 
+//GET route
+// Log in view
+router.get('/login', (req, res, next) => {
+    res.render('auth/login');
+})
+
+//POST route
+//User inputs log in
+router.post('/login', async (req, res, next) => {
+    const { username, password } = req.body;
+    if(!username || !password) {
+        res.render('auth/login', { error: 'Introduce username and password to log in'});
+        return;
+    }
+    try {
+        const userDB = await User.findOne({username: username})
+        if(!userDB) {
+            res.render('auth/login', { error: `There are no users by ${username}`});
+            return;
+        } else {
+            const passwordMatch = await bcrypt.compare(password, userDB.hashedPassword);
+            if(passwordMatch) {
+                req.session.currentUser = userDB;
+                res.render('auth/profile', userDB);
+            } else {
+                res.render('auth/login', { error: 'Unable to authenticate user' });
+                return;
+            }
+        }
+    } catch (error) {
+        next(error)
+    }
+
+})
+
 module.exports = router;
